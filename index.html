@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 QUIZ BRAWL STARS - Teste seu conhecimento!</title>
+    <style>
+        /* ============================================================
+                   ESTILOS GERAIS
+                   ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800&display=swap');
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a0a3e 30%, #2d1b69 60%, #1a0a3e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* ===== FUNDO COM ESTRELAS ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(2px 2px at 20px 30px, #eee, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(2px 2px at 50px 160px, #ddd, transparent),
+                radial-gradient(2px 2px at 90px 40px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.7), transparent);
+            background-size: 200px 200px;
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== CONTAINER PRINCIPAL ===== */
+        .quiz-container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 35px 30px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* ===== CABEÇALHO ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header .logo-icon {
+            font-size: 3.5rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .header h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #f5c842, #ff6b35, #f5c842);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease-in-out infinite;
+            text-shadow: none;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .header p span {
+            color: #f5c842;
+        }
+
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 16px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.08);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .status-item .value {
+            color: #fff;
+            font-size: 1.2rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .status-item .value.highlight {
+            color: #f5c842;
+        }
+
+        .progress-container {
+            flex: 1;
+            min-width: 100px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f5c842, #ff6b35);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 0%;
+            box-shadow: 0 0 20px rgba(245, 200, 66, 0.3);
+        }
+
+        /* ===== ÁREA DA PERGUNTA ===== */
+        .question-area {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 24px;
+            padding: 30px 28px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.06);
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #f5c842, #ff6b35);
+            color: #1a0a2e;
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 4px 14px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .question-text {
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+
+        .question-text .category-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 12px;
+            margin-right: 8px;
+            vertical-align: middle;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .category-badge.easy {
+            background: rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .category-badge.medium {
+            background: rgba(241, 196, 15, 0.3);
+            color: #f1c40f;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .category-badge.hard {
+            background: rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        /* ===== OPÇÕES ===== */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Nunito', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn .letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 0.8rem;
+            color: #aaa;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(245, 200, 66, 0.12);
+            border-color: rgba(245, 200, 66, 0.3);
+            transform: translateX(4px);
+        }
+
+        .option-btn:hover:not(:disabled) .letter {
+            background: rgba(245, 200, 66, 0.2);
+            color: #f5c842;
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.97);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .option-btn.correct {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: #2ecc71;
+            box-shadow: 0 0 30px rgba(46, 204, 113, 0.15);
+        }
+
+        .option-btn.correct .letter {
+            background: #2ecc71;
+            color: #fff;
+        }
+
+        .option-btn.wrong {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+            box-shadow: 0 0 30px rgba(231, 76, 60, 0.15);
+        }
+
+        .option-btn.wrong .letter {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .option-btn.reveal {
+            border-color: rgba(255, 215, 0, 0.2);
+        }
+
+        /* ===== FEEDBACK ===== */
+        .feedback-area {
+            margin-top: 20px;
+            padding: 16px 20px;
+            border-radius: 14px;
+            display: none;
+            font-weight: 700;
+            font-size: 1rem;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-area.show {
+            display: block;
+        }
+
+        .feedback-area.correct {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        .feedback-area.wrong {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .feedback-area .points-earned {
+            display: inline-block;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 2px 14px;
+            border-radius: 20px;
+            color: #f5c842;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        /* ===== BOTÕES DE CONTROLE ===== */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f5c842, #ff6b35);
+            color: #1a0a2e;
+            box-shadow: 0 5px 25px rgba(245, 200, 66, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(245, 200, 66, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            box-shadow: 0 5px 25px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(46, 204, 113, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: #fff;
+            box-shadow: 0 5px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 35px rgba(231, 76, 60, 0.5);
+        }
+
+        /* ===== RANKING ===== */
+        .ranking-area {
+            margin-top: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: none;
+        }
+
+        .ranking-area.show {
+            display: block;
+            animation: slideUp 0.5s ease;
+        }
+
+        .ranking-area h3 {
+            color: #f5c842;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            border-left: 4px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s;
+        }
+
+        .ranking-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .ranking-item .rank {
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.3);
+            min-width: 30px;
+        }
+
+        .ranking-item .name {
+            color: #fff;
+            font-weight: 700;
+            flex: 1;
+            margin-left: 10px;
+        }
+
+        .ranking-item .score {
+            color: #f5c842;
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .ranking-item .badge {
+            font-size: 1.5rem;
+            margin-right: 8px;
+        }
+
+        .ranking-item.top1 {
+            border-left-color: #f5c842;
+            background: rgba(245, 200, 66, 0.08);
+        }
+
+        .ranking-item.top2 {
+            border-left-color: #bdc3c7;
+            background: rgba(189, 195, 199, 0.06);
+        }
+
+        .ranking-item.top3 {
+            border-left-color: #e67e22;
+            background: rgba(230, 126, 34, 0.06);
+        }
+
+        /* ===== MODAL DE FIM ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            max-width: 500px;
+            width: 100%;
+            background: linear-gradient(135deg, #1a0a3e, #2d1b69);
+            border-radius: 30px;
+            padding: 40px 35px;
+            text-align: center;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            animation: modalPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8) translateY(30px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal .trophy {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .modal h2 {
+            color: #f5c842;
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        .modal .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .modal .final-score {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 15px 0;
+        }
+
+        .modal .final-score span {
+            color: #f5c842;
+        }
+
+        .modal .rank-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f5c842;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: rgba(245, 200, 66, 0.1);
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .modal .btn {
+            margin-top: 10px;
+        }
+
+        /* ===== RESPONSIVO ===== */
+        @media (max-width: 768px) {
+            .quiz-container { padding: 20px 16px; }
+            .header h1 { font-size: 2rem; }
+            .header .logo-icon { font-size: 2.8rem; }
+            .options-grid { grid-template-columns: 1fr; }
+            .question-text { font-size: 1.1rem; }
+            .status-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+            .controls { flex-direction: column; }
+            .controls .btn { width: 100%; justify-content: center; }
+            .modal { padding: 30px 20px; }
+            .modal .final-score { font-size: 2.8rem; }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.6rem; }
+            .option-btn { font-size: 0.9rem; padding: 12px 14px; }
+            .question-area { padding: 20px 16px; }
+            .ranking-item { flex-wrap: wrap; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ============================================================
+HTML DO QUIZ
+============================================================ -->
+<div class="quiz-container" id="app">
+
+    <!-- CABEÇALHO -->
+    <div class="header">
+        <span class="logo-icon">🏆</span>
+        <h1>BRAWL STARS</h1>
+        <p>⚔️ <span>Teste seu conhecimento</span> • 20 perguntas ⚔️</p>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+        <div class="status-item">
+            🎯 Pergunta <span class="value" id="currentQuestion">1</span>/<span id="totalQuestions">20</span>
+        </div>
+        <div class="status-item">
+            ⭐ Pontos <span class="value highlight" id="currentScore">0</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="status-item">
+            ✅ Acertos <span class="value" id="correctCount">0</span>
+        </div>
+    </div>
+
+    <!-- ÁREA DA PERGUNTA -->
+    <div class="question-area" id="questionArea">
+        <div class="question-number" id="questionNumber">Pergunta 1</div>
+        <div class="question-text" id="questionText">
+            <span class="category-badge easy">🌱 Fácil</span>
+            Clique em <strong>"Iniciar Quiz"</strong> para começar!
+        </div>
+        <div class="options-grid" id="optionsContainer"></div>
+        <div class="feedback-area" id="feedbackArea"></div>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="controls">
+        <button class="btn btn-secondary" onclick="resetQuiz()">🔄 Reiniciar</button>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="startBtn" onclick="startQuiz()">🚀 Iniciar Quiz</button>
+            <button class="btn btn-success" id="nextBtn" onclick="nextQuestion()" style="display:none;">➡️ Próxima</button>
+        </div>
+    </div>
+
+    <!-- RANKING -->
+    <div class="ranking-area" id="rankingArea">
+        <h3>🏅 RANKING DOS JOGADORES</h3>
+        <div class="ranking-list" id="rankingList"></div>
+    </div>
+</div>
+
+<!-- ============================================================
+MODAL DE FIM DE JOGO
+============================================================ -->
+<div class="modal-overlay" id="endModal">
+    <div class="modal">
+        <span class="trophy" id="resultEmoji">🏆</span>
+        <h2 id="resultTitle">Fim de Jogo!</h2>
+        <p class="subtitle" id="resultSubtitle">Você completou todas as perguntas!</p>
+        <div class="final-score">
+            <span id="finalScore">0</span> pts
+        </div>
+        <div class="rank-title" id="rankTitle">🌟 BRAWLER LENDÁRIO</div>
+        <div style="margin-top:10px; color:rgba(255,255,255,0.5); font-size:0.9rem;">
+            ✅ <span id="finalCorrect">0</span> acertos de 20
+        </div>
+        <button class="btn btn-primary" onclick="closeModal(); resetQuiz();" style="margin-top:20px;">
+            🔄 Jogar Novamente
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================
+JAVASCRIPT
+============================================================ -->
+<script>
+    // ============================================================
+    // DADOS - 20 PERGUNTAS SOBRE BRAWL STARS
+    // ============================================================
+
+    const questions = [
+        // 1 - Fácil
+        {
+            category: 'easy',
+            question: 'Quantos jogadores participam de uma partida no modo "Gem Grab" (3v3)?',
+            options: ['3 jogadores', '4 jogadores', '6 jogadores', '8 jogadores'],
+            correct: 2,
+            points: 1
+        },
+        // 2 - Fácil
+        {
+            category: 'easy',
+            question: 'Qual destes NÃO é um modo de jogo oficial do Brawl Stars?',
+            options: ['Brawl Ball', 'Showdown', 'Battle Royale', 'Heist'],
+            correct: 2,
+            points: 1
+        },
+        // 3 - Fácil
+        {
+            category: 'easy',
+            question: 'Qual empresa desenvolveu o Brawl Stars?',
+            options: ['Riot Games', 'Supercell', 'Mojang', 'Epic Games'],
+            correct: 1,
+            points: 1
+        },
+        // 4 - Fácil
+        {
+            category: 'easy',
+            question: 'No modo "Showdown", qual é o objetivo principal?',
+            options: ['Coletar 10 gemas', 'Ser o último Brawler sobrevivente', 'Marcar 2 gols', 'Destruir o cofre inimigo'],
+            correct: 1,
+            points: 1
+        },
+        // 5 - Fácil
+        {
+            category: 'easy',
+            question: 'O que os jogadores usam para melhorar seus Brawlers?',
+            options: ['Moedas e pontos de poder', 'Gemas e skins', 'Troféus e experiência', 'Tickets e energia'],
+            correct: 0,
+            points: 1
+        },
+        // 6 - Médio
+        {
+            category: 'medium',
+            question: 'Qual destes é um Brawler do tipo "Assassino" no jogo?',
+            options: ['Brock', 'Edgar', 'Poco', 'Barley'],
+            correct: 1,
+            points: 2
+        },
+        // 7 - Médio
+        {
+            category: 'medium',
+            question: 'Qual é o nome do sistema de recompensas que substituiu os baús no jogo?',
+            options: ['Brawl Boxes', 'Mega Boxes', 'Starr Drops', 'Big Boxes'],
+            correct: 2,
+            points: 2
+        },
+        // 8 - Médio
+        {
+            category: 'medium',
+            question: 'Em que ano o Brawl Stars foi lançado globalmente?',
+            options: ['2016', '2017', '2018', '2019'],
+            correct: 2,
+            points: 2
+        },
+        // 9 - Médio
+        {
+            category: 'medium',
+            question: 'Qual destes Brawlers é considerado do tipo "Lendário"?',
+            options: ['Spike', 'Nita', 'Colt', 'Shelly'],
+            correct: 0,
+            points: 2
+        },
+        // 10 - Médio
+        {
+            category: 'medium',
+            question: 'O que são os "Hypercharges" no Brawl Stars?',
+            options: [
+                'Uma nova categoria de skins',
+                'Um aprimoramento especial das Super habilidades',
+                'Um novo modo de jogo',
+                'Um tipo de baú raro'
+            ],
+            correct: 1,
+            points: 2
+        },
+        // 11 - Difícil
+        {
+            category: 'hard',
+            question: 'Qual é o nome do novo Brawler lançado em junho de 2026, descrito como um "Assassino Lendário"?',
+            options: ['Wendy', 'Nori', 'Damian', 'Bolt'],
+            correct: 1,
+            points: 3
+        },
+        // 12 - Difícil
+        {
+            category: 'hard',
+            question: 'Qual função foi introduzida recentemente no jogo, relacionada ao sistema de melhorias dos Brawlers?',
+            options: ['Star Powers', 'Buffies', 'Gadgets', 'Skins'],
+            correct: 1,
+            points: 3
+        },
+        // 13 - Difícil
+        {
+            category: 'hard',
+            question: 'Qual Brawler lendário tem ataques que envolvem "fúria de pesca" e pode pular sobre paredes?',
+            options: ['Fang', 'Buzz', 'Nori', 'Stu'],
+            correct: 2,
+            points: 3
+        },
+        // 14 - Difícil
+        {
+            category: 'hard',
+            question: 'A nova Brawler Wendy, do tipo "Mítico/Suporte", tem qual traço especial?',
+            options: [
+                'Pode andar sobre a água',
+                'Recarrega munição mais rápido',
+                'Tem visão na grama alta',
+                'Ganha dano extra em alcance curto'
+            ],
+            correct: 0,
+            points: 3
+        },
+        // 15 - Difícil
+        {
+            category: 'hard',
+            question: 'Qual foi o principal tema das temporadas de 2026 mencionadas nas notas de atualização?',
+            options: [
+                'A Era dos Dinossauros',
+                'A Rebelião do Ramen e o NanoNoodles',
+                'O Império Espacial',
+                'A Era do Gelo'
+            ],
+            correct: 1,
+            points: 3
+        },
+        // 16 - Médio
+        {
+            category: 'medium',
+            question: 'Qual é o nome do evento especial que acontece aos finais de semana no Brawl Stars?',
+            options: ['Desafio de Campeões', 'Brawl Pass', 'Clube Wars', 'Desafio de Fim de Semana'],
+            correct: 0,
+            points: 2
+        },
+        // 17 - Fácil
+        {
+            category: 'easy',
+            question: 'Quantos troféus são necessários para desbloquear o modo "Power League"?',
+            options: ['3000', '4500', '6000', '7500'],
+            correct: 1,
+            points: 1
+        },
+        // 18 - Médio
+        {
+            category: 'medium',
+            question: 'Qual Brawler tem a habilidade de curar aliados com sua Super?',
+            options: ['Byron', 'Colt', 'Brock', 'Dynamike'],
+            correct: 0,
+            points: 2
+        },
+        // 19 - Difícil
+        {
+            category: 'hard',
+            question: 'Qual é o nome da liga mais alta no modo "Power League"?',
+            options: ['Mestre', 'Lendário', 'Mítico', 'Campeão'],
+            correct: 0,
+            points: 3
+        },
+        // 20 - Difícil
+        {
+            category: 'hard',
+            question: 'Qual Brawler foi o primeiro a receber uma skin "Hypercharge" exclusiva?',
+            options: ['Shelly', 'Colt', 'Spike', 'Edgar'],
+            correct: 0,
+            points: 3
+        }
+    ];
+
+    // ============================================================
+    // ESTADO DO QUIZ
+    // ============================================================
+
+    let currentQuestion = 0;
+    let score = 0;
+    let correctAnswers = 0;
+    let answered = false;
+    let quizStarted = false;
+    let playerName = '';
+
+    // Ranking (salvo no localStorage)
+    let ranking = [];
+
+    // ============================================================
+    // FUNÇÕES PRINCIPAIS
+    // ============================================================
+
+    function startQuiz() {
+        if (quizStarted) return;
+
+        // Pede nome do jogador
+        const name = prompt('👋 Digite seu nome para começar o quiz:', 'Brawler');
+        if (!name || name.trim() === '') {
+            alert('Por favor, digite um nome para continuar!');
+            return;
+        }
+        playerName = name.trim();
+
+        quizStarted = true;
+        currentQuestion = 0;
+        score = 0;
+        correctAnswers = 0;
+        answered = false;
+
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+        document.getElementById('rankingArea').classList.remove('show');
+
+        loadQuestion();
+        updateStatus();
+    }
+
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            endQuiz();
+            return;
+        }
+
+        const q = questions[currentQuestion];
+        answered = false;
+
+        // Número da pergunta
+        document.getElementById('questionNumber').textContent = `Pergunta ${currentQuestion + 1}`;
+
+        // Texto da pergunta com badge
+        const badgeMap = {
+            easy: '<span class="category-badge easy">🌱 Fácil</span>',
+            medium: '<span class="category-badge medium">⚡ Médio</span>',
+            hard: '<span class="category-badge hard">🔥 Difícil</span>'
+        };
+        document.getElementById('questionText').innerHTML = `${badgeMap[q.category]} ${q.question}`;
+
+        // Opções
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = '';
+        const letters = ['A', 'B', 'C', 'D'];
+
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="letter">${letters[idx]}</span> ${opt}`;
+            btn.dataset.index = idx;
+            btn.onclick = () => selectOption(idx);
+            container.appendChild(btn);
+        });
+
+        // Esconde feedback
+        const feedback = document.getElementById('feedbackArea');
+        feedback.className = 'feedback-area';
+        feedback.textContent = '';
+        feedback.style.display = 'none';
+
+        // Atualiza status
+        updateStatus();
+        document.getElementById('nextBtn').style.display = 'none';
+    }
+
+    function selectOption(index) {
+        if (answered) return;
+        if (!quizStarted) return;
+
+        const q = questions[currentQuestion];
+        const buttons = document.querySelectorAll('.option-btn');
+        const feedback = document.getElementById('feedbackArea');
+
+        // Desabilita todos os botões
+        buttons.forEach(btn => btn.disabled = true);
+
+        const isCorrect = index === q.correct;
+
+        // Marca os botões
+        buttons.forEach((btn, idx) => {
+            if (idx === q.correct) btn.classList.add('correct');
+            if (idx === index && !isCorrect) btn.classList.add('wrong');
+        });
+
+        // Atualiza pontuação
+        if (isCorrect) {
+            score += q.points;
+            correctAnswers++;
+            feedback.className = 'feedback-area show correct';
+            feedback.innerHTML = `
+                ✅ CORRETO! +${q.points} pontos
+                <span class="points-earned">⭐ ${score} pts</span>
+            `;
+        } else {
+            feedback.className = 'feedback-area show wrong';
+            feedback.innerHTML = `
+                ❌ ERRADO! A resposta correta era: <strong>${q.options[q.correct]}</strong>
+            `;
+        }
+
+        answered = true;
+        updateStatus();
+
+        // Mostra botão próximo
+        if (currentQuestion < questions.length - 1) {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').textContent = '➡️ Próxima';
+        } else {
+            document.getElementById('nextBtn').style.display = 'inline-block';
+            document.getElementById('nextBtn').textContent = '🏆 Ver Resultado';
+        }
+    }
+
+    function nextQuestion() {
+        if (!answered) return;
+        currentQuestion++;
+        if (currentQuestion >= questions.length) {
+            endQuiz();
+        } else {
+            loadQuestion();
+            document.getElementById('nextBtn').style.display = 'none';
+        }
+    }
+
+    function updateStatus() {
+        document.getElementById('currentQuestion').textContent = Math.min(currentQuestion + 1, questions.length);
+        document.getElementById('currentScore').textContent = score;
+        document.getElementById('correctCount').textContent = correctAnswers;
+
+        const progress = ((currentQuestion) / questions.length) * 100;
+        document.getElementById('progressBar').style.width = `${Math.min(progress, 100)}%`;
+    }
+
+    // ============================================================
+    // FIM DO QUIZ
+    // ============================================================
+
+    function endQuiz() {
+        quizStarted = false;
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('startBtn').textContent = '🔁 Jogar Novamente';
+
+        // Salva no ranking
+        saveRanking(playerName, score, correctAnswers);
+
+        // Mostra modal
+        showEndModal(playerName, score, correctAnswers);
+
+        // Mostra ranking
+        displayRanking();
+    }
+
+    function showEndModal(name, score, correct) {
+        const modal = document.getElementById('endModal');
+        const emoji = document.getElementById('resultEmoji');
+        const title = document.getElementById('resultTitle');
+        const subtitle = document.getElementById('resultSubtitle');
+        const finalScore = document.getElementById('finalScore');
+        const rankTitle = document.getElementById('rankTitle');
+        const finalCorrect = document.getElementById('finalCorrect');
+
+        finalScore.textContent = score;
+        finalCorrect.textContent = correct;
+
+        // Classificação
+        let rank, emojiIcon;
+        const pct = correct / questions.length;
+
+        if (pct >= 0.9) {
+            rank = '🌟 BRAWLER LENDÁRIO';
+            emojiIcon = '🏆';
+            subtitle.textContent = 'Você é uma verdadeira lenda das arenas!';
+        } else if (pct >= 0.7) {
+            rank = '⭐ MÍTICO';
+            emojiIcon = '🏅';
+            subtitle.textContent = 'Excelente! Você conhece muito do jogo!';
+        } else if (pct >= 0.5) {
+            rank = '⚡ ÉPICO';
+            emojiIcon = '🥈';
+            subtitle.textContent = 'Bom trabalho! Continue jogando e aprendendo!';
+        } else if (pct >= 0.3) {
+            rank = '🟣 SUPER RARO';
+            emojiIcon = '🥉';
+            subtitle.textContent = 'Hora de jogar mais e estudar o meta!';
+        } else {
+            rank = '🟢 RARO';
+            emojiIcon = '🎮';
+            subtitle.textContent = 'Bora começar a jogar, meu amigo!';
+        }
+
+        emoji.textContent = emojiIcon;
+        title.textContent = `Fim de Jogo, ${name}!`;
+        rankTitle.textContent = rank;
+
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        document.getElementById('endModal').classList.remove('show');
+        document.body.style.overflow = 'auto';
+    }
+
+    // ============================================================
+    // RANKING (localStorage)
+    // ============================================================
+
+    function saveRanking(name, score, correct) {
+        let rankings = JSON.parse(localStorage.getItem('brawlQuizRanking') || '[]');
+
+        rankings.push({
+            name: name,
+            score: score,
+            correct: correct,
+            total: questions.length,
+            date: new Date().toLocaleDateString('pt-BR')
+        });
+
+        // Ordena por pontuação (maior primeiro)
+        rankings.sort((a, b) => b.score - a.score);
+
+        // Mantém só os 10 melhores
+        if (rankings.length > 10) {
+            rankings = rankings.slice(0, 10);
+        }
+
+        localStorage.setItem('brawlQuizRanking', JSON.stringify(rankings));
+        ranking = rankings;
+    }
+
+    function loadRanking() {
+        const data = localStorage.getItem('brawlQuizRanking');
+        ranking = data ? JSON.parse(data) : [];
+    }
+
+    function displayRanking() {
+        loadRanking();
+        const area = document.getElementById('rankingArea');
+        const list = document.getElementById('rankingList');
+
+        if (ranking.length === 0) {
+            area.classList.remove('show');
+            return;
+        }
+
+        area.classList.add('show');
+        list.innerHTML = '';
+
+        const medals = ['🥇', '🥈', '🥉'];
+
+        ranking.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = `ranking-item ${idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : ''}`;
+            div.innerHTML = `
+                <span class="rank">#${idx + 1}</span>
+                <span class="badge">${medals[idx] || '🎯'}</span>
+                <span class="name">${item.name}</span>
+                <span class="score">${item.score} pts</span>
+                <span style="color:rgba(255,255,255,0.3); font-size:0.7rem;">(${item.correct}/${item.total})</span>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    // ============================================================
+    // RESET
+    // ============================================================
+
+    function resetQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        correctAnswers = 0;
+        answered = false;
+        quizStarted = false;
+        playerName = '';
+
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('startBtn').textContent = '🚀 Iniciar Quiz';
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('optionsContainer').innerHTML = '';
+        document.getElementById('questionText').innerHTML = `
+            <span class="category-badge easy">🌱 Fácil</span>
+            Clique em <strong>"Iniciar Quiz"</strong> para começar!
+        `;
+        document.getElementById('questionNumber').textContent = 'Pergunta 1';
+        document.getElementById('feedbackArea').className = 'feedback-area';
+        document.getElementById('feedbackArea').textContent = '';
+        document.getElementById('feedbackArea').style.display = 'none';
+
+        updateStatus();
+        document.getElementById('progressBar').style.width = '0%';
+
+        displayRanking();
+        closeModal();
+    }
+
+    // ============================================================
+    // INICIALIZAÇÃO
+    // ============================================================
+
+    window.onload = function() {
+        loadRanking();
+        displayRanking();
+        updateStatus();
+        document.getElementById('totalQuestions').textContent = questions.length;
+    };
+</script>
+
+</body>
+</html>
